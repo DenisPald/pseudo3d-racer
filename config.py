@@ -1,5 +1,5 @@
 from enum import Enum
-from map_file import MAP
+from map_file import MAP, TOTAL_SEGMENTS
 
 FPS = 60
 WIDTH = 900
@@ -13,11 +13,11 @@ CAMERA_HEIGHT = 450
 ROAD_WIDTH = 4000  # ось x: Расстояниие от середины дороги(0 координата) до края дороги (единичная координата)
 SEGMENT_LENGTH = 100
 RUMBLE_SEGMENTS = 5
-TOTAL_SEGMENTS = 10000
 ROAD_LENGTH = TOTAL_SEGMENTS * SEGMENT_LENGTH
-RENDERING_RANGE = 200
-ROAD_LANES = 6 #Мегять в связке с шириной дороги
+RENDERING_RANGE = 150
+ROAD_LANES = 6 #Менять в связке с шириной дороги
 MAX_SPEED = SEGMENT_LENGTH
+TURN_SPEED_CONST = (1 / FPS) * (1 / MAX_SPEED)
 
 TILE_WIDTH_SCALE = 0.6
 TILE_HEIGHT_SCALE = 2

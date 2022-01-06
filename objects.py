@@ -28,7 +28,7 @@ class Player(pygame.sprite.Sprite):
         self.y = 0
         self.z = DISTANCE
         self.speed = 15
-        self.turn_speed = (3 / FPS) * (self.speed / MAX_SPEED)
+        self.turn_speed = TURN_SPEED_CONST * self.speed
         self.direction = None
 
         self.image = Player.image_normal
@@ -39,19 +39,20 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         cur_segment = self.road.get_segment(self.z)
         self.y = cur_segment.y
-        half_x = cur_segment.x + (self.x * ROAD_WIDTH)
+        half_x = cur_segment.x - (self.x * ROAD_WIDTH)
         if abs(half_x) > ROAD_WIDTH // 2:
-            self.turn_speed = (3 / FPS) * (self.speed / MAX_SPEED) * 0.5
             if self.speed >= MAX_SPEED / 3:
                 self.speed -= 2 * ACCEL
-            else:
-                self.turn_speed = (3 / FPS) * (self.speed / MAX_SPEED)
 
         if self.speed < MAX_SPEED:
             self.speed += ACCEL
         self.z += self.speed
+
+        self.turn_speed = TURN_SPEED_CONST * self.speed
+
         if self.z > ROAD_LENGTH:
             self.z -= ROAD_LENGTH
+
         if self.direction == LEFT:
             self.x -= self.turn_speed
             self.image = Player.image_left
@@ -126,10 +127,9 @@ class Road():
             self.segments.append(
                 Segment(i, i * SEGMENT_LENGTH, self.camera, self.surface, 0))
 
-        for i in range(len(MAP)):
-            self.segments[i].x = MAP[i][0]
-            self.segments[i].y = MAP[i][1]
-            print(MAP[i])
+        for i in range(1, len(MAP)):
+            self.segments[i].x = self.segments[i - 1].x + MAP[i][0]
+            self.segments[i].y = self.segments[i - 1].y + MAP[i][1]
 
         for i in range(RUMBLE_SEGMENTS):
             self.segments[i].color = Colors.FINISH1.value
