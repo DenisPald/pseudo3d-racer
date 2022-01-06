@@ -2,6 +2,6 @@ dx = 0
 ddx = 5
 MAP = []
 for i in range(100):
-    MAP.append(dx)
+    MAP.append((0, dx))
     dx += ddx
-    ddx += 0.1
+    ddx += 0.01

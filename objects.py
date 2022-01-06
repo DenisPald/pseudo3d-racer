@@ -38,6 +38,7 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         cur_segment = self.road.get_segment(self.z)
+        self.y = cur_segment.y
         half_x = cur_segment.x + (self.x * ROAD_WIDTH)
         if abs(half_x) > ROAD_WIDTH // 2:
             self.turn_speed = (3 / FPS) * (self.speed / MAX_SPEED) * 0.5
@@ -77,21 +78,22 @@ class Camera():
 
     def update(self):
         self.x = (self.player.x * ROAD_WIDTH) + ROAD_WIDTH // 2
+        self.y = self.player.y + CAMERA_HEIGHT
         self.z = self.player.z - DISTANCE
         if self.z < 0:
             self.z += ROAD_LENGTH
 
 
 class Segment():
-    def __init__(self, index: int, z_world: int, camera: Camera,
-                 surface: pygame.surface.Surface, x_world) -> None:
+    def __init__(self, index: int, z: int, camera: Camera,
+                 surface: pygame.surface.Surface, x) -> None:
         self.surface = surface
 
         self.camera = camera
         self.index = index
-        self.x = x_world
+        self.x = x
         self.y = 0
-        self.z = z_world
+        self.z = z
         self.scale = 0
         self.color = Colors.DARK.value if (
             index // RUMBLE_SEGMENTS) % 2 == 0 else Colors.LIGHT.value
@@ -125,7 +127,9 @@ class Road():
                 Segment(i, i * SEGMENT_LENGTH, self.camera, self.surface, 0))
 
         for i in range(len(MAP)):
-            self.segments[i].x_world = MAP[i]
+            self.segments[i].x = MAP[i][0]
+            self.segments[i].y = MAP[i][1]
+            print(MAP[i])
 
         for i in range(RUMBLE_SEGMENTS):
             self.segments[i].color = Colors.FINISH1.value
