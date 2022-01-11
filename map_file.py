@@ -1,6 +1,6 @@
 import random
 
-TOTAL_SEGMENTS = 100000
+TOTAL_SEGMENTS = 500
 MAP = []
 
 STEP = 100
@@ -9,8 +9,8 @@ N_OF_STEPS = TOTAL_SEGMENTS // STEP
 dx = [0, ]
 dy = [0, ]
 for i in range(1, N_OF_STEPS - 1):
-    cur_dy = random.randint(0, 4)
-    cur_dx = random.randint(-50, 50)
+    cur_dy = random.randint(0, 0)
+    cur_dx = random.randint(-0, 0)
 
     if sum(dy) < 0:
         dy.append(cur_dy)

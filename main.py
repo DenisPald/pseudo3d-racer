@@ -7,10 +7,11 @@ if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode(SIZE)
     player_group = pygame.sprite.Group()
+    tiles_group = pygame.sprite.Group()
     player = Player(player_group)
     player_group.add(player)
     camera = Camera(player)
-    road = Road(camera, screen)
+    road = Road(camera, screen, tiles_group)
     player.set_road(road)
 
     clock = pygame.time.Clock()
@@ -35,6 +36,9 @@ if __name__ == '__main__':
         road.render()
         player_group.update()
         player_group.draw(screen)
+        tiles_group.update()
+        print(tiles_group.sprites()[0].rect)
+        tiles_group.draw(screen)
 
         pygame.display.flip()
 

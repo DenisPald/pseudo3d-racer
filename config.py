@@ -19,8 +19,11 @@ ROAD_LANES = 6 #Менять в связке с шириной дороги
 MAX_SPEED = SEGMENT_LENGTH
 TURN_SPEED_CONST = (1 / FPS) * (1 / MAX_SPEED)
 
-TILE_WIDTH_SCALE = 0.6
-TILE_HEIGHT_SCALE = 2
+PLAYER_WIDTH_SCALE = 0.6
+PLAYER_HEIGHT_SCALE = 2
+
+TILE_WIDTH_SCALE = 2
+TILE_HEIGHT_SCALE = 4
 
 
 class Colors(Enum):
@@ -32,3 +35,5 @@ class Colors(Enum):
 
 LEFT = 0
 RIGHT = 1
+
+TOTAL_TILES = 10
