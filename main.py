@@ -37,7 +37,6 @@ if __name__ == '__main__':
         player_group.update()
         player_group.draw(screen)
         tiles_group.update()
-        print(tiles_group.sprites()[0].rect)
         tiles_group.draw(screen)
 
         pygame.display.flip()

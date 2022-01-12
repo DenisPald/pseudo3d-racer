@@ -83,6 +83,7 @@ class Camera():
         self.y = self.player.y + CAMERA_HEIGHT
         self.z = self.player.z - DISTANCE
 
+
 class Segment():
     def __init__(self, index: int, z: int, camera: Camera,
                  surface: pygame.surface.Surface, x) -> None:
@@ -113,31 +114,15 @@ class Segment():
 
 
 class Tile(pygame.sprite.Sprite):
-    image1 = load_image("tile1.png")
-    image2 = load_image("tile2.png")
-    image3 = load_image("tile3.png")
-    image4 = load_image("tile4.png")
-    image1 = pygame.transform.scale(
-        image1, (ROAD_WIDTH // ROAD_LANES * TILE_WIDTH_SCALE,
-                 SEGMENT_LENGTH * TILE_HEIGHT_SCALE))
-    image2 = pygame.transform.scale(
-        image2, (ROAD_WIDTH // ROAD_LANES * TILE_WIDTH_SCALE,
-                 SEGMENT_LENGTH * TILE_HEIGHT_SCALE))
-    image3 = pygame.transform.scale(
-        image3, (ROAD_WIDTH // ROAD_LANES * TILE_WIDTH_SCALE,
-                 SEGMENT_LENGTH * TILE_HEIGHT_SCALE))
-    image4 = pygame.transform.scale(
-        image4, (ROAD_WIDTH // ROAD_LANES * TILE_WIDTH_SCALE,
-                 SEGMENT_LENGTH * TILE_HEIGHT_SCALE))
-
-    images = (image1, image2, image3, image4)
+    colors = ('red', 'green', 'yellow', 'brown')
 
     def __init__(self, x: int, y: int, z: int, camera: Camera, group,
                  road) -> None:
         super().__init__(group)
-        # self.image = random.choice(Tile.images)
-        self.image = pygame.Surface((800, 500))
-        self.image.fill("red")
+        self.image = pygame.Surface(
+            ((ROAD_WIDTH // ROAD_LANES) * TILE_WIDTH_SCALE, TILE_HEIGHT))
+        self.color = random.choice(Tile.colors)
+        self.image.fill(self.color)
         self.rect: pygame.rect.Rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -171,25 +156,32 @@ class Tile(pygame.sprite.Sprite):
     def update(self):
         render_this = True
 
-        # if self.z < self.camera.z and self.camera.z > 0:
-        #     self.camera.z -= ROAD_LENGTH
-
-        if self.z <= self.camera.z + DISTANCE:
+        if self.z < self.camera.z and self.camera.z > 0:
+            self.camera.z -= ROAD_LENGTH
+        # Если сзади камеры или слишком далеко то не рисуем
+        if self.z <= self.camera.z + DISTANCE or self.z >= self.camera.z + TILE_RENDER_RANGE * SEGMENT_LENGTH:
             render_this = False
 
         if render_this:
+            if self.z < self.camera.z and self.camera.z > 0:
+                self.camera.z -= ROAD_LENGTH
             x, y, w, h = self.render()
             self.rect.x = x
             self.rect.y = y
             self.rect.w = w
             self.rect.h = h
+            self.image.fill(self.color)
         else:
             self.rect.x = 0
             self.rect.y = 0
             self.rect.w = 0
             self.rect.h = 0
 
-        self.image = pygame.transform.scale(self.image, self.rect.size)
+        if self.z > self.camera.z:
+            self.camera.z += ROAD_LENGTH
+
+        self.image: pygame.surface.Surface = pygame.transform.scale(
+            self.image, self.rect.size)
 
 
 class Road():
@@ -216,34 +208,18 @@ class Road():
             self.segments[i].color = Colors.FINISH1.value
             self.segments[RUMBLE_SEGMENTS - i].color = Colors.FINISH2.value
 
-        # diff = (TOTAL_SEGMENTS // TOTAL_TILES) * SEGMENT_LENGTH
-        # z = 0
-        # for i in range(TOTAL_TILES):
-        #     z += diff
-        #     x = random.randint(-ROAD_WIDTH, ROAD_WIDTH)
-        #     tile = Tile(x, 0, z, self.camera, self.tile_group,
-        #                 self)
-        #     self.tiles.append(tile)
-        #     self.tile_group.add(tile)
-            # print(tile.z)
-
-
-        base_segment = self.get_segment(10000)
-        tile = Tile(2000, base_segment.y, 10000, self.camera, self.tile_group, self)
-        self.tiles.append(tile)
-        self.tile_group.add(tile)
+        diff = (TOTAL_SEGMENTS // TOTAL_TILES) * SEGMENT_LENGTH
+        z = 0
+        for i in range(TOTAL_TILES):
+            z += diff
+            x = random.randint(0, ROAD_WIDTH)
+            tile = Tile(x, 0, z, self.camera, self.tile_group, self)
+            self.tiles.append(tile)
+            self.tile_group.add(tile)
 
     def get_segment(self, z) -> Segment:
         index = int((z // SEGMENT_LENGTH) % TOTAL_SEGMENTS)
         return self.segments[index]
-
-    def get_tile(self, z):
-        index = int((z // SEGMENT_LENGTH) % TOTAL_TILES)
-        if self.tiles[index].z == z:
-            return self.tiles[index]
-        else:
-            print('Error')
-            return None
 
     def render(self):
         base_index = self.get_segment(self.camera.z).index
@@ -262,6 +238,7 @@ class Road():
                                0)
                 current_index = 1
                 past_index = 0
+
             if current_index < base_index and self.camera.z > 0:
                 self.camera.z -= ROAD_LENGTH
 
@@ -271,7 +248,7 @@ class Road():
             x1, y1, w1 = past.render()
             x2, y2, w2 = current.render()
 
-            if current_index < base_index and self.camera.z > 0:
+            if current_index < base_index:
                 self.camera.z += ROAD_LENGTH
 
             asphalt_color = current.color[0]
