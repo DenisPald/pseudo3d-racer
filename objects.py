@@ -154,7 +154,7 @@ class Tile(pygame.sprite.Sprite):
 
     def render(self) -> Tuple[int, int, int, int]:
         x_trans = self.x - self.camera.x
-        y_trans = self.y - self.camera.y
+        y_trans = self.y
         z_trans = self.z - self.camera.z
         scale = self.camera.dist_to_plane / z_trans
         projected_x = scale * x_trans
@@ -177,22 +177,19 @@ class Tile(pygame.sprite.Sprite):
         if self.z <= self.camera.z + DISTANCE:
             render_this = False
 
-        # print(x, y, w, h)
-
-        # if current_index < base_index and self.camera.z > 0:
-        #     self.camera.z += ROAD_LENGTH
-
         if render_this:
             x, y, w, h = self.render()
             self.rect.x = x
             self.rect.y = y
-            self.rect.size = (w, h)
-            self.image = pygame.transform.scale(self.image, self.rect.size)
+            self.rect.w = w
+            self.rect.h = h
         else:
-            self.rect.x = -WIDTH
-            self.rect.y = -HEIGHT
+            self.rect.x = 0
+            self.rect.y = 0
             self.rect.w = 0
             self.rect.h = 0
+
+        self.image = pygame.transform.scale(self.image, self.rect.size)
 
 
 class Road():
@@ -202,6 +199,7 @@ class Road():
         self.segments = []
         self.tiles = []
         self.camera = camera
+        self.maxy = 0
         self.tile_group = tile_group
         self.reset_road()
 
