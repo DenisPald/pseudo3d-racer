@@ -216,6 +216,7 @@ class Road():
             tile = Tile(x, 0, z, self.camera, self.tile_group, self)
             self.tiles.append(tile)
             self.tile_group.add(tile)
+            self.tile_group.move_to_back(tile)
 
     def get_segment(self, z) -> Segment:
         index = int((z // SEGMENT_LENGTH) % TOTAL_SEGMENTS)

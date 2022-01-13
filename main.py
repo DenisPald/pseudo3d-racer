@@ -7,7 +7,7 @@ if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode(SIZE)
     player_group = pygame.sprite.Group()
-    tiles_group = pygame.sprite.Group()
+    tiles_group = pygame.sprite.LayeredUpdates()
     player = Player(player_group)
     player_group.add(player)
     camera = Camera(player)
