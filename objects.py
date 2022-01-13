@@ -63,6 +63,16 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = Player.image_normal
 
+        for i in self.road.tiles:
+            # Если проверять точные координаты то игрок сможет проходить сквозь машину
+            # например если у игрока была координата 1000, и скорость 5, а у препятствия координата 1002, то игрок просто через нее проскочит
+            # также допольнительно проверяем не проехали ли мы препятствие
+            if -SEGMENT_LENGTH / 2 < i.z - self.z < SEGMENT_LENGTH / 2 and abs(
+                    self.x * ROAD_WIDTH + ROAD_WIDTH / 2 - i.x) < i.width:
+                # Если же игрок все таки столкунлся то мы его отбрасываем на 4 секции и уменьшаем скорость чтобы можно было обойти препятствие
+                self.z -= SEGMENT_LENGTH * RUMBLE_SEGMENTS * 4
+                self.speed = 0.1
+
     def set_direction(self, direction):
         self.direction = direction
 

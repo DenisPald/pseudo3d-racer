@@ -7,7 +7,7 @@ HEIGHT = 900
 SIZE = (WIDTH, HEIGHT)
 HALF_WIDTH = WIDTH // 2
 HALF_HEIGHT = HEIGHT // 2
-ACCEL = 1
+ACCEL = 0.5
 DISTANCE = 500
 CAMERA_HEIGHT = 450
 ROAD_WIDTH = 4000  # ось x: Расстояниие от середины дороги(0 координата) до края дороги (единичная координата)
@@ -37,4 +37,4 @@ class Colors(Enum):
 LEFT = 0
 RIGHT = 1
 
-TOTAL_TILES = 10
+TOTAL_TILES = 5
