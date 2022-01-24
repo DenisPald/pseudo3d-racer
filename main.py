@@ -40,9 +40,9 @@ if __name__ == '__main__':
         tiles_group.draw(screen)
 
         f1 = pygame.font.Font(None, 40)
-        text = f1.render(f'{str(int(player.z))}/{str(int(ROAD_LENGTH))}', True, (0, 0, 0))
+        text = f1.render(f'{str(int(player.z))}/{str(int(ROAD_LENGTH))}', True,
+                         (0, 0, 0))
         screen.blit(text, (0, 0))
-
 
         pygame.display.flip()
 

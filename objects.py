@@ -136,7 +136,8 @@ class Tile(pygame.sprite.Sprite):
         self.color = random.choice(Tile.colors)
         self.image.fill(self.color)
         self.rect: pygame.rect.Rect = self.image.get_rect()
-        self.x = x
+        self.base = road.get_segment(z)
+        self.x = self.base.x + x
         self.y = y
         self.z = z
         self.camera = camera

@@ -7,8 +7,8 @@ def remake_map(total_segments, step):
     dx = [0, ]
     dy = [0, ]
     for i in range(1, n_of_steps - 1):
-        cur_dy = random.randint(0, 0)
-        cur_dx = random.randint(-0, 0)
+        cur_dy = random.randint(0, 4)
+        cur_dx = random.randint(-50, 50)
 
         if sum(dy) < 0:
             dy.append(cur_dy)
