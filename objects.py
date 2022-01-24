@@ -67,8 +67,9 @@ class Player(pygame.sprite.Sprite):
             # Если проверять точные координаты то игрок сможет проходить сквозь машину
             # например если у игрока была координата 1000, и скорость 5, а у препятствия координата 1002, то игрок просто через нее проскочит
             # также допольнительно проверяем не проехали ли мы препятствие
+            # + из-за неточного отображения спрайта игрока может показатся что игра иногда фиксирует столкновения неверно, поэтому домножаю ширину на 0.9 чтобы не бросалось в глаза
             if -SEGMENT_LENGTH / 2 < i.z - self.z < SEGMENT_LENGTH / 2 and abs(
-                    self.x * ROAD_WIDTH + ROAD_WIDTH / 2 - i.x) < i.width:
+                    self.x * ROAD_WIDTH + ROAD_WIDTH / 2 - i.x - i.width/2) < i.width*0.9:
                 # Если же игрок все таки столкунлся то мы его отбрасываем на 4 секции и уменьшаем скорость чтобы можно было обойти препятствие
                 self.z -= SEGMENT_LENGTH * RUMBLE_SEGMENTS * 4
                 self.speed = 0.1
@@ -129,8 +130,9 @@ class Tile(pygame.sprite.Sprite):
     def __init__(self, x: int, y: int, z: int, camera: Camera, group,
                  road) -> None:
         super().__init__(group)
+        random_coef = random.randint(5, 15)/10
         self.image = pygame.Surface(
-            ((ROAD_WIDTH // ROAD_LANES) * TILE_WIDTH_SCALE, TILE_HEIGHT))
+            ((ROAD_WIDTH // ROAD_LANES) * TILE_WIDTH_SCALE * random_coef, TILE_HEIGHT))
         self.color = random.choice(Tile.colors)
         self.image.fill(self.color)
         self.rect: pygame.rect.Rect = self.image.get_rect()
